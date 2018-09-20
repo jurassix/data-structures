@@ -1,0 +1,144 @@
+export { default as theme } from './theme'
+import { Invert, Split, SplitRight, FullScreenCode } from 'mdx-deck/layouts'
+import { Image, Appear, Code } from 'mdx-deck'
+import { Box } from 'grid-styled'
+
+import CodeLayout from './layouts/Code'
+
+# CS Basics
+### Data Structures
+##### [Working with data]
+---
+# Clint Ayres
+## @who_cayres
+## https://github.com/jurassix
+---
+export default SplitRight
+
+<Box bg='black'>
+  add attributes to things
+</Box>
+
+<Image src='./images/group_of_people.JPG' />
+
+```notes
+- let's do an exercise
+- how to look at the people in the picture as data?
+  - kinda weird right? mental leap... bc data is an abstraction
+- how would you:
+  - group people wearing a hat and those not.
+  - group people holding a sign and those not.
+- real data is messy
+- real data is 
+```
+---
+export default CodeLayout
+
+```jsx
+const string = 'anything in quotes';
+const number = 1980;
+const object = { 'key': 'value' };
+const array = [ 1, 2, 3, 4 ];
+```
+---
+## limitations?
+---
+export default CodeLayout
+
+```javascript
+
+const key = { name: 'Lucy', age: 4, location: 'Atlanta };
+const object = { key: 'child' }
+
+```
+---
+export default CodeLayout
+
+```javascript
+
+const group1 = ['Lucy', 'Amelia', 'Miller', 'Jody'];
+const group2 = ['Gail', 'Sally', 'Marlyn', 'Jody'];
+
+// includes 'Jody' twice
+const all = [...group1, ...group2];
+
+```
+---
+export default CodeLayout
+
+```javascript
+
+// filter out dupes - iterative
+const dedup = list => {
+  const uniqueList = [];
+  list.forEach(item => {
+    if (!uniqueList.includes(item)) {
+      uniqueList.push(item);
+    }
+  });
+  return uniqueList;
+};
+
+```
+---
+export default CodeLayout
+
+```javascript
+// filter out dupes - functional
+const dedup = list =>
+  list.reduce((acc, item) => {
+    if (!acc.includes(item)) {
+      acc.push(item);
+    }
+    return acc;
+  }, []);
+
+```
+---
+export default CodeLayout
+
+```javascript
+
+// filter out dupes - inplace
+const dedup = list => {
+  for (let i = 0; i < list.length; i++) {
+    let item = list[i];
+    if (list.indexOf(item) !== i) {
+      list.splice(i--, 1);
+    }
+  }
+  return list;
+};
+
+```
+---
+export default CodeLayout
+
+```javascript
+import uniq from 'lodash/uniq';
+
+// third party lib
+const dedup = list => uniq(list);
+
+```
+---
+export default CodeLayout
+
+```javascript
+
+const dedup = list => Array.from(new Set(list));
+
+```
+---
+export default CodeLayout
+
+```javascript
+
+const string = 'anything in quotes';
+const number = 1980;
+const object = { 'key': 'value' };
+const array = [ 1, 2, 3, 4 ];
+
+```
+---
+# The end

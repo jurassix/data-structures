@@ -1,0 +1,15 @@
+{
+  "name": "data-structures",
+  "version": "1.0.0",
+  "description": "connect.js presentation 2018",
+  "main": "deck.mdx",
+  "scripts": {
+    "start": "mdx-deck deck.mdx"
+  },
+  "author": "clinton.ayres@gmail.com (jurassix)",
+  "license": "MIT",
+  "dependencies": {
+    "grid-styled": "^5.0.2",
+    "mdx-deck": "^1.7.4"
+  }
+}
