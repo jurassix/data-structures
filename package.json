@@ -9,6 +9,7 @@
   "author": "clinton.ayres@gmail.com (jurassix)",
   "license": "MIT",
   "dependencies": {
+    "faker": "^4.1.0",
     "grid-styled": "^5.0.2",
     "mdx-deck": "^1.7.4"
   }

@@ -1,8 +1,9 @@
-export { default as theme } from './theme'
+export { default as theme } from './themes/theme'
 import { Invert, Split, SplitRight, FullScreenCode } from 'mdx-deck/layouts'
 import { Image, Appear, Code } from 'mdx-deck'
 import { Box } from 'grid-styled'
 
+import { backgroundColor } from './constants'
 import CodeLayout from './layouts/Code'
 
 # CS Basics
@@ -13,44 +14,8 @@ import CodeLayout from './layouts/Code'
 ## @who_cayres
 ## https://github.com/jurassix
 ---
-export default SplitRight
-
-<Box bg='black'>
-  add attributes to things
-</Box>
-
-<Image src='./images/group_of_people.JPG' />
-
-```notes
-- let's do an exercise
-- how to look at the people in the picture as data?
-  - kinda weird right? mental leap... bc data is an abstraction
-- how would you:
-  - group people wearing a hat and those not.
-  - group people holding a sign and those not.
-- real data is messy
-- real data is 
-```
----
-export default CodeLayout
-
-```jsx
-const string = 'anything in quotes';
-const number = 1980;
-const object = { 'key': 'value' };
-const array = [ 1, 2, 3, 4 ];
-```
----
-## limitations?
----
-export default CodeLayout
-
-```javascript
-
-const key = { name: 'Lucy', age: 4, location: 'Atlanta };
-const object = { key: 'child' }
-
-```
+### The desicions we make in code
+### need to be examined.
 ---
 export default CodeLayout
 
@@ -62,13 +27,56 @@ const group2 = ['Gail', 'Sally', 'Marlyn', 'Jody'];
 // includes 'Jody' twice
 const all = [...group1, ...group2];
 
+// how to remove???
+
 ```
+---
+### The Set object lets you store unique values of any type, whether primitive values or object references.
+---
+```javascript
+var set = new Set();
+
+set.add(1); // Set [ 1 ]
+set.add(5); // Set [ 1, 5 ]
+set.add(5); // Set [ 1, 5 ]
+```
+---
+```javascript
+var set = new Set();
+
+// objects are referential equality (===)
+set.add({a: 1}); // Set [ {a: 1} ]
+set.add({a: 1}); // Set [ {a: 1}, {a: 1} ]
+```
+---
+### The case for weak sets - demo time!
+---
+```javascript
+const set = new WeakSet();
+let go = true;
+
+const work = () => {
+  for (let i = 0; i < 100000; i++) {
+    set.add({});
+  }
+  console.log(0);
+
+  for (let i = 0; i < 100000; i++) {}
+  console.log(1);
+
+  if (go) setTimeout(work, 0);
+};
+
+// kick it off!
+work();
+```
+https://ponyfoo.com/articles/es6-weakmaps-sets-and-weaksets-in-depth
 ---
 export default CodeLayout
 
 ```javascript
 
-// filter out dupes - iterative
+// forEach
 const dedup = list => {
   const uniqueList = [];
   list.forEach(item => {
@@ -84,7 +92,7 @@ const dedup = list => {
 export default CodeLayout
 
 ```javascript
-// filter out dupes - functional
+// reduce
 const dedup = list =>
   list.reduce((acc, item) => {
     if (!acc.includes(item)) {
@@ -99,7 +107,7 @@ export default CodeLayout
 
 ```javascript
 
-// filter out dupes - inplace
+// in-place
 const dedup = list => {
   for (let i = 0; i < list.length; i++) {
     let item = list[i];
@@ -117,7 +125,6 @@ export default CodeLayout
 ```javascript
 import uniq from 'lodash/uniq';
 
-// third party lib
 const dedup = list => uniq(list);
 
 ```
@@ -125,20 +132,47 @@ const dedup = list => uniq(list);
 export default CodeLayout
 
 ```javascript
-
+// native set
 const dedup = list => Array.from(new Set(list));
+
+```
+---
+https://jsperf.com/dedup/1
+---
+<Image src="./images/dedup_results.png" size="contain"/>
+---
+export default CodeLayout
+
+```jsx
+const string = 'anything in quotes';
+const number = 1980;
+const date = new Date('11/07/1980')
+const object = { 'key': 'value' };
+const array = [ 1, 2, 3, 4 ];
+```
+---
+## limitations?
+---
+export default CodeLayout
+
+```javascript
+
+const key = { 
+  name: 'Lucy', 
+  age: 4, 
+  location: 'Atlanta'
+};
+
+const object = { 
+  key: 'child' 
+}
 
 ```
 ---
 export default CodeLayout
 
 ```javascript
-
-const string = 'anything in quotes';
-const number = 1980;
-const object = { 'key': 'value' };
-const array = [ 1, 2, 3, 4 ];
-
+// TODO
 ```
 ---
 # The end
