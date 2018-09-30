@@ -15,7 +15,7 @@ import CodeLayout from './layouts/Code'
 ## https://github.com/jurassix
 ---
 ### The decisions we make in code
-### need to be examined.
+### function differently as data grows.
 ---
 export default CodeLayout
 
@@ -27,50 +27,63 @@ const group2 = ['Gail', 'Sally', 'Marlyn', 'Jody'];
 // includes 'Jody' twice
 const all = [...group1, ...group2];
 
-// how to remove???
+// how to remove duplicates???
 
 ```
 ---
-### The Set object lets you store unique values of any type, whether primitive values or object references.
+### The Set data structure store's unique values of any type.
 ---
 ```javascript
-var set = new Set();
+const set = new Set();
 
 set.add(1); // Set [ 1 ]
 set.add(5); // Set [ 1, 5 ]
 set.add(5); // Set [ 1, 5 ]
+
+set.has(1); // true
+set.has(3); // false
+
+set.size; // 2
+
+set.delete(5); // removes 5 from the set
+
+// iterable
+for (let item of set) console.log(item); // 1
 ```
 ---
+export default CodeLayout
+
 ```javascript
-var set = new Set();
+const set = new Set();
 
-// objects are referential equality (===)
-set.add({a: 1}); // Set [ {a: 1} ]
-set.add({a: 1}); // Set [ {a: 1}, {a: 1} ]
+// objects use referential equality (===)
+
+set.add({ a: 1 }); // Set [ {a: 1} ]
+set.add({ a: 1 }); // Set [ {a: 1}, {a: 1} ]
+
+const b = { b: 2 };
+set.add(b); // Set [ {a: 1}, {a: 1}, {b: 2} ]
+set.add(b); // Set [ {a: 1}, {a: 1}, {b: 2} ]
 ```
 ---
-### The case for weak sets - demo time!
+### When you need to remove duplicates reach for Set.
 ---
+export default CodeLayout
+
 ```javascript
-const set = new WeakSet();
-let go = true;
+// native set
+const dedup = list => [...new Set(list)];
 
-const work = () => {
-  for (let i = 0; i < 100000; i++) {
-    set.add({});
-  }
-  console.log(0);
-
-  for (let i = 0; i < 100000; i++) {}
-  console.log(1);
-
-  if (go) setTimeout(work, 0);
-};
-
-// kick it off!
-work();
 ```
-https://ponyfoo.com/articles/es6-weakmaps-sets-and-weaksets-in-depth
+---
+export default CodeLayout
+
+```javascript
+import uniq from 'lodash/uniq';
+
+const dedup = list => uniq(list);
+
+```
 ---
 export default CodeLayout
 
@@ -89,57 +102,47 @@ const dedup = list => {
 
 ```
 ---
-export default CodeLayout
-
-```javascript
-// reduce
-const dedup = list =>
-  list.reduce((acc, item) => {
-    if (!acc.includes(item)) {
-      acc.push(item);
-    }
-    return acc;
-  }, []);
-
-```
----
-export default CodeLayout
-
-```javascript
-
-// in-place
-const dedup = list => {
-  for (let i = 0; i < list.length; i++) {
-    let item = list[i];
-    if (list.indexOf(item) !== i) {
-      list.splice(i--, 1);
-    }
-  }
-  return list;
-};
-
-```
----
-export default CodeLayout
-
-```javascript
-import uniq from 'lodash/uniq';
-
-const dedup = list => uniq(list);
-
-```
----
-export default CodeLayout
-
-```javascript
-// native set
-const dedup = list => Array.from(new Set(list));
-
-```
----
 https://jsperf.com/dedup/1
 ---
 <Image src="./images/dedup_results.png" size="contain"/>
+---
+### why is our hand rolled solution so underperfomant?
+---
+### let's examine lodash for some advise
+
+[uniq.js](https://raw.githubusercontent.com/lodash/lodash/master/uniq.js)
+
+[baseUniq.js](https://raw.githubusercontent.com/lodash/lodash/master/.internal/baseUniq.js)
+
+[setToArray.js](https://raw.githubusercontent.com/lodash/lodash/master/.internal/setToArray.js)
+---
+```javascript
+
+// forEach
+const SEEN = '__SEEN__';
+
+const dedup = list => {
+  const __cache = {};
+
+  const uniqueList = [];
+  list.forEach(item => {
+    if (__cache[item] !== SEEN) {
+      // update cache
+      __cache[item] = SEEN;
+
+      // add to list
+      uniqueList.push(item);
+    }
+  });
+  return uniqueList;
+};
+```
+---
+https://jsperf.com/dedup/10
+---
+<Image src="./images/dedup_refactor_results.png" size="contain"/>
+---
+### limitations: we can't support deduping lists with objects
 ---
 export default CodeLayout
 
@@ -151,8 +154,6 @@ const object = { 'key': 'value' };
 const array = [ 1, 2, 3, 4 ];
 ```
 ---
-## limitations?
----
 export default CodeLayout
 
 ```javascript
@@ -163,16 +164,110 @@ const key = {
   location: 'Atlanta'
 };
 
-const object = { 
-  key: 'child' 
-}
+const map = { 
+  [key]: 'child' 
+};
 
+// { [object Object]: 'child' }
 ```
 ---
 export default CodeLayout
 
 ```javascript
-// TODO
+
+const map = {
+  [{ a: 1 }]: 'child',
+  [{ b: 1 }]: 'value',
+};
+
+// { [object Object]: 'value' }
+```
+---
+### The Map data structure holds key-value pairs, and supports objects as keys.
+---
+```javascript
+const map = new Map();
+
+const string = 'key';
+const object = {};
+const fn = function() {};
+
+// setting the values
+map.set(string, 'string value');
+map.set(object, 'object value');
+map.set(fn, 'fn value');
+
+map.has(fn) // true
+
+// Map(3) {
+//   "key" => "string value",
+//   {} => "object value",
+//   ƒ => "fn value"
+// }
+```
+---
+```javascript
+
+// forEach
+const dedup = list => {
+  const __cache = new Map();
+
+  const uniqueList = [];
+  list.forEach(item => {
+    if (!__cache.has(item)) {
+      // update cache
+      __cache.set(item, true);
+
+      // add to list
+      uniqueList.push(item);
+    }
+  });
+  return uniqueList;
+};
+```
+---
+### The WeakSet data structure store's unique objcet refs, no iteration.
+---
+
+```javascript
+const apis = new WeakSet();
+
+apis
+  .add({
+    uri: '/api/users',
+    method: 'GET',
+  })
+  .add({
+    uri: '/api/roles',
+    method: 'GET',
+  });
+
+```
+
+```notes
+demo - use performance tab to force a gc and clear the set
+```
+---
+```javascript
+const set = new WeakSet();
+let go = true;
+
+const work = () => {
+  console.log('begin work');
+
+  for (let i = 0; i < 100000; i++) {
+    set.add({});
+  }
+  
+  if (go) setTimeout(work, 0);
+};
+
+// kick it off!
+work();
+```
+
+```notes 
+if these were dom objects as we mutate the dom we are allowing those objects to be cleared
 ```
 ---
 # The end
