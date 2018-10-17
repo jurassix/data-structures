@@ -7,15 +7,580 @@ import { backgroundColor } from './constants'
 import CodeLayout from './layouts/Code'
 
 # CS Basics
-### Data Structures
-##### [Working with data]
+## JavaScript Basics
+### [Increase understanding through experiments]
+
 ---
 # Clint Ayres
 ## @who_cayres
 ## https://github.com/jurassix
 ---
-### The decisions we make in code
-### function differently as data grows.
+### The decisions we make in our code,
+### changes as data grows.
+```notes
+ - everything works when:
+   - you have one user
+   - you have nothing in your database
+   - you have no network latency
+   - you have unlimited memory
+
+```
+---
+### understanding of the basics javascript and cs
+### give you finess and creativity when wrtting code
+
+```notes
+once you know how something works, you can exploit it
+```
+---
+### Agenda / Experiments
+
+ <!-- - Analyzing Algorithm Time + Space Complexity -->
+ <!-- - Immutablility -->
+
+ - Data Types + Functions
+ - Memory Management
+ - Serialization + Hashing + Equality
+ - Sets + Maps
+ - Trees
+---
+### Data Types + Functions
+---
+### In the real world we work with more that Primitives
+```notes
+The reason examples like Factorial are hard to learn from is than
+```
+---
+### Primitives (immutable)
+ - Boolean
+ - Null
+ - Undefined
+ - Number
+ - String
+ - Symbol
+---
+export default CodeLayout
+
+```javascript
+// primitives are referentially equal
+let a = '1 two 👞';
+let b = '1 two 👞';
+
+console.log(a === b); // true
+console.log(a ==  b); // true
+
+a += '3 4 🚪';
+console.log(b); // '1 two 👞'
+```
+---
+export default CodeLayout
+
+### swap is beautiful
+
+```javascript
+[a, b] = [b, a];
+```
+```notes
+so I thought I'd give it a shot, this should be easy right?
+```
+---
+### Quick facts about Functions...
+ - Function arguments are always... <Box color='tomato'> _pass by value_! </Box>
+ - You cannot reassign an argument from outside the current scope
+ - Arguments are essentially _copies_ of passed in values
+---
+export default CodeLayout
+
+### Also, this doesn't work
+
+```javascript
+const f = 💩 => 💰;
+```
+---
+export default CodeLayout
+
+### 🧐
+
+```javascript
+const swap = (a, b) => [a, b] = [b, a];
+```
+---
+export default CodeLayout
+
+### pass by value
+
+```javascript
+const swap = (a, b) => [a, b] = [b, a];
+
+let boo = '👻';
+let beep = '🤖';
+
+swap(boo, beep);
+
+console.log(boo); // 👻
+console.log(beep); // 🤖
+```
+```notes
+swap is beautiful until you put it in a function
+```
+---
+### Objects (mutable)
+ - Object
+ - Array
+ - Date
+ - Map/WeakMap
+ - Set/WeakSet
+---
+### Quick facts about Functions with Objects...
+ - Function arguments are always... <Box color='tomato'> _pass by value_! </Box>
+ - You cannot reassign an argument from outside the current scope
+ - However, an Objects _reference_ is a _value_. (Call by sharing)
+ - But, you cannot reassign an object's reference from outside the current scope either
+---
+### Also, emojis can be italicised!!
+
+<h1><em>😀 😀 😀 😀 😀 😀 😀 😀 😀</em></h1>
+
+---
+export default CodeLayout
+
+### pass by reference???
+
+```javascript
+const swap = (a, b) => [a, b] = [b, a];
+
+const boo = { value: '👻' };
+const beep = { value: '🤖' };
+
+swap(boo, beep);
+
+console.log(boo);  // { value: '👻' }
+console.log(beep); // { value: '🤖' }
+```
+---
+### It turns out even some basic things like swap, 
+### are really hard in JavaScript
+---
+export default CodeLayout
+
+```javascript
+const swap = (a, b) => {
+  const tempA = {...a};
+  // swap A
+  Object.keys(a).forEach(key => delete a[key]);
+  Object.keys(b).forEach(key => a[key] = b[key]);
+  // swap B
+  Object.keys(b).forEach(key => delete b[key]);
+  Object.keys(tempA).forEach(key => b[key] = tempA[key]);
+};
+```
+---
+### Q: do we have to consider every data type uniquely?
+<Appear>
+A: Yups 😭
+</Appear>
+---
+export default CodeLayout
+
+```javascript
+const swap = (a, b) => {
+  const tempA = [...a];
+  // swap A
+  a.length = 0;
+  a.push(...b);
+  // swap B
+  b.length = 0;  
+  b.push(...tempA);
+};
+```
+---
+### What did I learn from all this?
+
+<Appear>
+<p>Functions are always pass-by-value</p>
+<p>Types are actually important even in an untyped language</p>
+<p>Swap is stupid hard, and doesn't work</p>
+<p>Emojis can be italicised!</p>
+</Appear> 
+
+---
+### Memory Management
+ - heap + stack + gc
+ - allocate + use + release
+---
+image of js engine (heap + stack)
+credit: https://blog.sessionstack.com/how-does-javascript-actually-work-part-1-b0bacc073cf
+---
+image of call stack in action
+credit: https://blog.sessionstack.com/how-does-javascript-actually-work-part-1-b0bacc073cf
+---
+# Heap
+ - Memory allocation occurs here (wrong)
+ - Parsed JS source is stored here (verify)
+ - New variables are created here (wrong)
+ - Garbage collections occurs here (wrong)
+---
+# GC
+ - How Memory is released
+ - Algorithms like _mark-and-sweep_ used to determine which memory can be released
+ - When GC is synchronous -> _ui 🔒_
+---
+# Stack
+ - Code is evaluated here as stack frames when your code excutes
+ - Your execution path is processed and managed here
+ - Stack is processed until empty  
+ - While stack is non-empty nothing else can happen -> _ui 🔒_
+ - Event Queue cycles when stack is empty, looking for next task
+---
+image of js heap + stack + web apis + event loops 
+credit: https://blog.sessionstack.com/how-does-javascript-actually-work-part-1-b0bacc073cf
+---
+image of stack execution
+---
+export default CodeLayout
+
+### stack will never empty
+
+```javascript
+let counter = 0;
+while (true) {
+  console.log(counter++);
+}
+```
+---
+### What does async exceptions drop the call stack?
+---
+export default CodeLayout
+
+```javascript
+let counter = 0;
+let go = true;
+
+const work = () => {
+  console.log(counter++);
+  if (counter > 1000) throw new Error("YOLO");
+  if (go) setTimeout(work, 0);
+};
+
+// kick it off!
+work();
+```
+---
+Q: How can I implement setTimeout in native JavaScript?
+
+<Appear>
+  A: You can't 🦃 it's a Web api!
+</Appear>
+---
+How do the following affect the Call Stack?
+ - recursion 
+ - setTimeout
+ - sync
+ - async
+---
+export default CodeLayout
+
+```javascript
+// recursion
+const work = () => {
+  work();
+};
+
+// kick it off!
+work();
+```
+
+```notes
+exaust the stack (maximum callstack exceeded)
+learn more about the call stack does each function call add a new call stack?
+```
+---
+export default CodeLayout
+
+```javascript
+// recursion + async
+const work = () => {
+  setTimeout(work, 0);
+};
+
+// kick it off!
+work();
+```
+```notes
+keep call stack shallow
+```
+---
+async calls reset the callstack because they say give me a result later
+
+in a loop this causes the call stack to be parked and started again later
+---
+```javascript
+let counter = 0;
+const work = () => {
+  if (counter++ > 500) {
+    counter = 0;
+    setTimeout(work, 0);
+  } else {
+    work();
+  }
+};
+
+// kick it off!
+work();
+```
+
+```notes
+gain performance deepend he callstack and manage escape hatches.
+```
+---
+### Tail Call Optimization (TCO)
+<Appear>
+<p>Doesn't work (for me)</p>
+<p>https://twitter.com/who_cayres/status/1051865386759725057</p>
+</Appear>
+---
+### What did I learn from all this?
+<Appear>
+<p>Recusion should be used on bounded data sets</p>
+<p>Async resets our call-stack giving us <em>unbounded</em> operations on a data set</p>
+<p>Async is essential language decision in a single threaded env, especially for large data sets</p>
+<p>While not likely, I can combine the two for perf gains</p>
+</Appear> 
+---
+### Serialization + Hashing + Equality
+
+```notes
+Hashing is an Algorithm that maps an input to a value.
+In JavaScript hashing is fairly complicated, but has some base elements we can examine.
+```
+---
+### Serialization of JavaScript has to handle with Circular References
+---
+export default CodeLayout
+
+```javascript
+let a = {};
+let b = { '🌧': a };
+
+a['🌈'] = b;
+
+isCircular(a); // true
+isCircular(b); // true
+```
+---
+```javascript
+const isCircular = s => {
+  const cache = new WeakSet();
+  const __isCircular = o => {
+    switch (getType(o)) {
+      case 'string':
+      case 'number':
+        return false;
+      case 'object':
+        if (cache.has(o)) return true;
+        else cache.add(o);
+        return Object.keys(o)
+          .sort()
+          .some(key => __isCircular(o[key]));
+      case 'array':
+        return o.some(__isCircular);
+      default:
+        return false;
+    }
+  };
+  return __isCircular(s);
+};
+```
+---
+### Have you written JSON.stringify in JavaScript?
+---
+export default CodeLayout
+
+```javascript
+
+let a = {
+  '🐒': '💩',
+  yolo: ['🤞🏽', '✌🏽', '🤟🏽', '🤘🏽', { '👌🏽': 'ok' }],
+};
+
+stringify(a);
+// "{yolo:[🤞🏽,✌🏽,🤟🏽,🤘🏽,{👌🏽:ok}],🐒:💩}"
+```
+---
+```javascript
+const stringify = s => {
+  const cache = new WeakSet();
+  const __stringify = o => {
+    switch (getType(o)) {
+      case 'string':
+      case 'number':
+        return o;
+      case 'object':
+        if (cache.has(o)) return '[Circular Reference]';
+        else cache.add(o);
+        return (
+          '{' +
+          Object.keys(o)
+            .sort()
+            .map(key => key + ':' + __stringify(o[key]))
+            .join(',') +
+          '}'
+        );
+      case 'array':
+        return '[' + o.map(__stringify).join(',') + ']';
+      default:
+        return '';
+    }
+  };
+  return __stringify(s);
+};
+```
+```notes
+const getType = t => {
+  if (Array.isArray(t)) return 'array';
+  return typeof t;
+};
+```
+---
+### Hashing 
+#### stringify + a hashing algorithm (SHA1, MD5, etc)
+
+```javascript
+md5(stringify({ a: '🦋', b: '🦄' }));
+```
+---
+### Hashing Algorithm (simplified)
+
+```javascript
+function hashCode(val) {
+  let hashCode = 0;
+  let character;
+  // If value to be hashed is already an integer, return it.
+  if (val.length === 0 || val.length === undefined) {
+    return val;
+  }
+  for (let i = 0; i < val.length; i++) {
+    character = val.charCodeAt(i);
+    hashCode = (hashCode << 5) - hashCode + character;
+    hashCode = hashCode & hashCode;
+  }
+  return hashCode;
+}
+```
+```notes
+https://mgechev.github.io/javascript-algorithms/data-structures_hash-table.js.html
+```
+---
+export default CodeLayout
+
+```javascript
+
+let yolo = ['🤞🏽', '✌🏽', '🤟🏽', '🤘🏽'];
+
+hashCode('🤟🏽'); // 1705342882
+hashCode(stringify(yolo)); // 1079040135
+```
+---
+export default CodeLayout
+
+```javascript
+const hash = s => {
+  const cache = new WeakSet();
+  const __hash = o => {
+    switch (getType(o)) {
+      case 'string':
+      case 'number':
+        return hashCode(o);
+      case 'object':
+        if (cache.has(o)) return 0;
+        else cache.add(o);
+        return Object.keys(o)
+          .sort()
+          .map(key => __hash(o[key]))
+          .reduce(sumAcc, 0);
+      case 'array':
+        return o.map(__hash).reduce(sumAcc, 0);
+      default:
+        return 0;
+    }
+  };
+  return __hash(s);
+};
+```
+```notes
+make a slide with the basic algorithm
+```
+---
+export default CodeLayout
+
+```javascript
+
+let yolo = ['🤞🏽', '✌🏽', '🤟🏽', '🤘🏽'];
+
+hash('🤟🏽'); // 1705342882
+hash(['🤞🏽', '✌🏽', '🤟🏽', '🤘🏽']) // 5127400491
+```
+---
+### What can you do with Hashing?
+
+<Appear>
+<p>Compare if two objects are the equal</p>
+<p>Referential Equality vs Structural Equality</p>
+<p>Map complex data to a single value</p>
+</Appear>
+---
+export default CodeLayout
+
+```javascript
+const o1 = { a: '🦋', b: '🦄' };
+const o2 = { b: '🦄', a: '🦋' };
+
+o1 === o2; // false
+o1 ==  o2; // false
+
+hash(o1) === hash(o2); // true
+hash(o1) ==  hash(o2); // true
+```
+```notes
+referential because hashCode returns primiatives and primatives are immutable
+```
+---
+export default CodeLayout
+
+### Maps in JavaScript are HashMaps*
+
+```javascript
+const value = { a: '🦋', b: '🦄' };
+
+const key = hash(value);
+
+// single value "mapping" to complex data
+const map = { [key]: value };
+```
+---
+### Optimizations 😎
+
+<Appear>
+<p>Don't use hashing for deep equality checks, can't terminate early</p>
+<p>Pre-hash and store those hashes on the object as a static revision/hashCode</p>
+<p>Don't compute a hash, just assign a unique key e.g. revision to your objects; change it when your object changes, compare hashes</p>
+</Appear>
+---
+### What did I learn from all this?
+
+<Appear>
+<p>Prefer referential equality to serializations</p>
+<p>Account for Circular references in your data</p>
+<p>async traversal may effects call stack giving you some more cylces</p>
+<p>sync traversal may overflow stack</p>
+<p>If going across a serializaiton boundry e.g. fetch, hashing may be more efficient than a rerender</p>
+</Appear> 
+---
+look into GIT sourcecode for object hashing algorithm
+
+https://github.com/git/git/tree/e83c5163316f89bfbde7d9ab23ca2e25604af290
+---
+### Sets + Maps
 ---
 export default CodeLayout
 
@@ -36,19 +601,19 @@ const all = [...group1, ...group2];
 ```javascript
 const set = new Set();
 
-set.add(1); // Set [ 1 ]
-set.add(5); // Set [ 1, 5 ]
-set.add(5); // Set [ 1, 5 ]
+set.add('🦕'); // Set [ '🦕' ]
+set.add('🦖'); // Set [ '🦕', '🦖' ]
+set.add('🦖'); // Set [ '🦕', '🦖' ]
 
-set.has(1); // true
-set.has(3); // false
+set.has('🦕'); // true
+set.has('🔥'); // false
 
 set.size; // 2
 
-set.delete(5); // removes 5 from the set
+set.delete('🦖'); // removes 🦖 from the set
 
 // iterable
-for (let item of set) console.log(item); // 1
+for (let item of set) console.log(item); // '🦕'
 ```
 ---
 export default CodeLayout
@@ -146,10 +711,10 @@ https://jsperf.com/dedup/10
 ---
 export default CodeLayout
 
-```jsx
+```javascript
 const string = 'anything in quotes';
 const number = 1980;
-const date = new Date('11/07/1980')
+const date = new Date('11/07/1980');
 const object = { 'key': 'value' };
 const array = [ 1, 2, 3, 4 ];
 ```
@@ -226,6 +791,16 @@ const dedup = list => {
 };
 ```
 ---
+export default CodeLayout
+
+```javascript
+let a = { value: 1 };
+
+dedup([a, a, a])
+
+// [{ value: 1 }]
+```
+---
 ### The WeakSet data structure store's unique objcet refs, no iteration.
 ---
 
@@ -270,4 +845,44 @@ work();
 if these were dom objects as we mutate the dom we are allowing those objects to be cleared
 ```
 ---
-# The end
+### What did I learn from all this?
+
+<Appear>
+<p>Object keys must be primatives</p>
+<p>Use Map() to store objects as keys</p>
+<p>Use Set() to create unique lists</p>
+<p>WeakMap/Set must contain Objects and they can be GC'd, no primiatives, no iterations</p>
+</Appear> 
+---
+### Trees
+---
+```javascript
+const root = {
+  id: 1,
+  value: { '🕷': '🕸' },
+  children: [
+    {
+      id: 2,
+      value: { '🐴': '🦄' },
+      children: [],
+    },
+    {
+      id: 3,
+      value: { '🐣': '🐥' },
+      children: [
+        {
+          id: 4,
+          value: { '🐼': '🐻' },
+          children: [],
+        },
+      ],
+    },
+  ],
+};
+```
+---
+#### Trees are 
+---
+### The decisions we make in our code,
+### changes as data grows.
+---
