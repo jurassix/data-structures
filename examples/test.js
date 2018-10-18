@@ -339,4 +339,60 @@ const root = {
 
 const sleep = async ms => await new Promise(resolve => setTimeout(resolve, ms));
 
-https://eloquentjavascript.net/11_async.html
+//eloquentjavascript.net/11_async.html
+
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].forEach(item => {
+  setTimeout(() => {
+    console.log(`${item}😈`);
+  }, 0);
+});
+
+// store only unique values
+class Set {
+  constructor() {
+    this.list = [];
+  }
+  get size() {
+    return this.list.length;
+  }
+  add(item) {
+    if (!this.has()) {
+      this.list.push(item);
+    }
+  }
+  has() {
+    return this.list.includes(item);
+  }
+  delete(item) {
+    const index = this.list.indexOf(item);
+    if (index !== -1) {
+      delete this.list[index];
+    }
+  }
+}
+
+class Map {
+  constructor() {
+    this.list = [];
+  }
+  set(key, value) {
+    if (!this.has(key)) {
+      this.list.push([key, value]);
+    }
+  }
+  get(key) {
+    const item = this.list.find(([k, v]) => k === key);
+    if (item) {
+      return item.value;
+    }
+  }
+  has(key) {
+    return this.list.some(([k, v]) => k === key);
+  }
+  delete(key) {
+    const index = this.list.findIndex(([k, v]) => k === key);
+    if (index !== -1) {
+      delete this.list[index];
+    }
+  }
+}

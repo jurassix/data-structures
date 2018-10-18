@@ -189,3 +189,265 @@ beepBoo();
 ### Demo
 [👻](https://tylermcginnis.com/javascript-visualizer/?code=function%20boo%28%29%20%7B%0A%20%20console.log%28%27boo%27%29%3B%0A%7D%0A%0Afunction%20beep%28%29%20%7B%0A%20%20console.log%28%27beep%27%29%3B%0A%7D%0A%0Afunction%20beepBoo%28%29%20%7B%0A%20%20beep%28%29%3B%0A%20%20boo%28%29%3B%0A%7D%0A%0AbeepBoo%28%29%3B)
 ---
+### Examine the stack of our code
+---
+export default CodeLayout
+
+### stack will never empty
+
+```javascript
+let counter = 0;
+while (true) {
+  console.log(counter++);
+}
+```
+---
+export default CodeLayout
+
+### stack will grow and eventually throw
+
+```javascript
+const work = () => {
+  work();
+};
+
+// kick it off!
+work();
+```
+---
+export default CodeLayout
+
+### stack will grow and eventually throw
+
+```javascript
+let shouldThrow = true;
+const work = () => {
+  if (shouldThrow) {
+    setTimeout(() => { throw new Error('setTimeout 😈'); }, 0);
+    shouldThrow = false;
+  }
+  work();
+};
+
+// kick it off!
+work();
+```
+---
+### Queue
+---
+export default CodeLayout
+
+```javascript
+const queue = new Queue();
+
+queue.enqueue('🦄');  // front [🦄] end
+queue.enqueue('🦋');  // front [🦄, 🦋] end
+queue.enqueue('🐞');  // front [🦄, 🦋, 🐞] end
+
+queue.peek(); // 🦄 front
+
+queue.dequeue(); // front [🦋, 🐞] end
+queue.dequeue(); // front [🐞] end
+queue.dequeue(); // front [] end
+```
+---
+export default CodeLayout
+
+```javascript
+// first-in first-out (FIFO) 
+class Queue {
+  constructor() {
+    this.list = [];    
+  }
+  enqueue(item) {
+    this.list.push(item);
+  }
+  dequeue() {
+    return this.list.shift();
+  }
+  peek() {
+    return this.list[0];
+  }
+}
+```
+---
+### What is a JavaScript Event Loop?
+---
+### Event Loop
+Call Stack + Callback Queue
+---
+### Think about the call stack
+
+```javascript
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].forEach(item => {
+  console.log(`${item}`);
+  setTimeout(() => {
+    console.log(`${item} 😈`);
+  }, 0);
+});
+
+// our stack is clear now
+// callback queue now has 10 items enqueued
+// each is handled in order
+```
+---
+### Event Loop is the exchange between call stack and event queue
+---
+### Sets + Maps
+---
+export default CodeLayout
+
+```javascript
+
+const group1 = ['Lucy', 'Amelia', 'Miller', 'Jody'];
+const group2 = ['Gail', 'Sally', 'Marlyn', 'Jody'];
+
+// includes 'Jody' twice
+const all = [...group1, ...group2];
+
+// how to remove duplicates???
+
+```
+---
+### The Set data structure stores unique values
+---
+```javascript
+const set = new Set();
+
+set.add('🦕'); // Set [ '🦕' ]
+set.add('🦖'); // Set [ '🦕', '🦖' ]
+set.add('🦖'); // Set [ '🦕', '🦖' ]
+
+set.has('🦕'); // true
+set.has('🔥'); // false
+
+set.size; // 2
+
+set.delete('🦖'); // removes 🦖 from the set
+
+// iterable
+for (let item of set) console.log(item); // '🦕'
+```
+---
+export default CodeLayout
+
+```javascript
+const set = new Set();
+
+// objects use referential equality (===)
+
+set.add({ a: 1 }); // Set [ {a: 1} ]
+set.add({ a: 1 }); // Set [ {a: 1}, {a: 1} ]
+
+const b = { b: 2 };
+set.add(b); // Set [ {a: 1}, {a: 1}, {b: 2} ]
+set.add(b); // Set [ {a: 1}, {a: 1}, {b: 2} ]
+```
+---
+export default CodeLayout
+
+```javascript
+// store only unique values
+class Set {
+  constructor() {
+    this.list = [];
+  }
+  get size() {
+    return this.list.length;
+  }
+  add(item) {
+    if (!this.has(item)) {
+      this.list.push(item);
+    }
+  }
+  has(item) {
+    return this.list.includes(item);
+  }
+  delete(item) {
+    const index = this.list.indexOf(item);
+    if (index !== -1) {
+      delete this.list[index];
+    }
+  }
+}
+```
+---
+### Please don't write your own Set 😘
+### It's built in
+---
+export default CodeLayout
+
+### Limitations with objects
+
+```javascript
+
+const key = { 
+  name: 'Lucy', 
+  age: 4, 
+  location: 'Atlanta'
+};
+
+const map = { 
+  [key]: 'child' 
+};
+
+// { [object Object]: 'child' }
+```
+---
+### The Map data structure holds key-value pairs, and supports objects as keys.
+---
+```javascript
+const map = new Map();
+
+const string = 'key';
+const object = {};
+const fn = function() {};
+
+// setting the values
+map.set(string, 'string value');
+map.set(object, 'object value');
+map.set(fn, 'fn value');
+
+map.has(fn) // true
+
+// Map(3) {
+//   "key" => "string value",
+//   {} => "object value",
+//   ƒ => "fn value"
+// }
+```
+---
+export default CodeLayout
+
+```javascript
+// store any data type as keys [list of lists]
+class Map {
+  constructor() {
+    this.list = [];
+  }
+  set(key, value) {
+    if (!this.has(key)) {
+      this.list.push([key, value]);
+    }
+  }
+  get(key) {
+    const item = this.list.find(([k, v]) => k === key);
+    if (item) {
+      return item.value;
+    }
+  }
+  has(key) {
+    return this.list.some(([k, v]) => k === key);
+  }
+  delete(key) {
+    const index = this.list.findIndex(([k, v]) => k === key);
+    if (index !== -1) {
+      delete this.list[index];
+    }
+  }
+}
+```
+---
+### Please don't write your own Map 😘
+### It's built in
+---
