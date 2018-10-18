@@ -91,23 +91,23 @@ history.redo(); // bottom [🦄, 🐢, 🦋, 🐞] top
 ```javascript
 class History {
   constructor() {
-    this._undo = new Stack();
-    this._redo = new Stack();
+    this.list = new Stack();
+    this.discard = new Stack();
   }
 
   add(item) {
-    this._undo.push(item);
+    this.list.push(item);
   }
   
   undo() {
-    const item = this._undo.pop();
-    this._redo.push(item);
+    const item = this.list.pop();
+    this.discard.push(item);
     return item;
   }
 
   redo() {
-    const item = this._redo.pop();
-    this._undo.push(item);
+    const item = this.discard.pop();
+    this.list.push(item);
     return item;
   }
 }
@@ -180,11 +180,12 @@ beepBoo();
 </ol>
 ---
 ### Function Invocation
-- every function call _pushes_ a new Execution Context
-- begins Creation and Execution Phases
-- when done _pops_ off Execution Stack
-- top of Execution Stack continues Execution
-- only when Execution Stack is empty, other work can begin
+- Each function call _pushes_ a new Execution Context on to the Stack
+- Creation phase
+- Execution Phases
+- Once code has finished _pops_ off Execution Stack
+- Top of Execution Stack continues Execution Phase
+- Only when Execution Stack is empty, other work can begin
 ---
 ### Demo
 [👻](https://tylermcginnis.com/javascript-visualizer/?code=function%20boo%28%29%20%7B%0A%20%20console.log%28%27boo%27%29%3B%0A%7D%0A%0Afunction%20beep%28%29%20%7B%0A%20%20console.log%28%27beep%27%29%3B%0A%7D%0A%0Afunction%20beepBoo%28%29%20%7B%0A%20%20beep%28%29%3B%0A%20%20boo%28%29%3B%0A%7D%0A%0AbeepBoo%28%29%3B)
@@ -204,7 +205,7 @@ while (true) {
 ---
 export default CodeLayout
 
-### stack will grow and eventually throw
+### stack will grow and eventually overflow
 
 ```javascript
 const work = () => {
@@ -280,7 +281,7 @@ Call Stack + Callback Queue
 
 ```javascript
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].forEach(item => {
-  console.log(`${item}`);
+  console.log(item);
   setTimeout(() => {
     console.log(`${item} 😈`);
   }, 0);
@@ -475,3 +476,63 @@ map.set({}, 'value').set({}, 'another value');
 ---
 ### Trees
 ---
+export default CodeLayout
+
+### HTML is hierarchical
+
+```javascript
+<section>
+  <h2>🐯</h2>
+  <p>🦁</p>
+  <em>
+    <h1>🐮</h1>
+    <p>🐷</p>
+  </em>
+</section>
+```
+---
+### We use trees to model hierarchical data
+---
+export default CodeLayout
+
+```javascript
+class Node {
+  constructor(value, children) {
+    this.value = value;
+    this.children = Array.isArray(children) ? children : [];
+  }
+}
+```
+---
+export default CodeLayout
+
+```javascript
+class Tree {
+  constructor() {
+    this.root = null;
+  }
+  add(value, parentValue) {
+    const child = new Node(value, []);
+    if (this.root == null) {
+      this.root = child;
+    } else {    
+      traverse(node => {
+        if (node.value === parentValue) {
+          node.children.push(child)
+        }
+      });
+    }
+  }
+  traverse(callback) {
+    
+  }
+}
+```
+---
+### We also use trees for searching
+---
+export default CodeLayout
+
+```javascript
+
+```
