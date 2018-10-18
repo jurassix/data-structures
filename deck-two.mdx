@@ -1,0 +1,191 @@
+export { default as theme } from './themes/theme'
+import { Invert, Split, SplitRight, FullScreenCode } from 'mdx-deck/layouts'
+import { Image, Appear, Code } from 'mdx-deck'
+import { Box } from 'grid-styled'
+
+import { backgroundColor } from './constants'
+import CodeLayout from './layouts/Code'
+
+# CS Basics
+## JavaScript Basics
+### [Increase understanding through experiments]
+---
+### Stack
+---
+export default CodeLayout
+
+```javascript
+const stack = new Stack();
+
+stack.push('🦄');  // bottom [🦄] top
+stack.push('🦋');  // bottom [🦄, 🦋] top
+stack.push('🐞');  // bottom [🦄, 🦋, 🐞] top
+
+stack.peek(); // 🐞 top
+
+stack.pop(); // bottom [🦄, 🦋] top
+stack.pop(); // bottom [🦄] top
+stack.pop(); // bottom [] top
+```
+---
+export default CodeLayout
+
+```javascript
+// last-in first-out (LIFO) 
+class Stack {
+  constructor() {
+    this.list = [];    
+  }
+  push(item) {
+    this.list.push(item);
+  }
+  pop() {
+    return this.list.pop();
+  }
+  peek() {
+    const length = this.list.length;
+    return this.list[length - 1];
+  }
+}
+```
+---
+### In the wild 🦁
+---
+### Reverse a word
+
+```javascript
+const stack = new Stack();
+const word = 'pumpkin';
+Array.from(word).map(c => stack.push(c));
+
+let reversed = '';
+while (stack.peek()) {
+  reversed += stack.pop();
+}
+
+console.log(reversed); // nikpmup
+```
+---
+### Undo + Redo
+
+```javascript
+const history = new History();
+
+history.add('🦄'); // bottom [🦄] top
+history.add('🦋'); // bottom [🦄, 🦋] top
+history.add('🐞'); // bottom [🦄, 🦋, 🐞] top
+
+history.undo(); // bottom [🦄, 🦋] top
+history.undo(); // bottom [🦄] top
+
+history.add('🐢'); // bottom [🦄, 🐢] top
+history.undo(); // bottom [🦄] top
+
+history.redo(); // bottom [🦄, 🐢] top
+history.redo(); // bottom [🦄, 🐢, 🦋] top
+history.redo(); // bottom [🦄, 🐢, 🦋, 🐞] top
+```
+---
+### Undo + Redo
+
+```javascript
+class History {
+  constructor() {
+    this._undo = new Stack();
+    this._redo = new Stack();
+  }
+
+  add(item) {
+    this._undo.push(item);
+  }
+  
+  undo() {
+    const item = this._undo.pop();
+    this._redo.push(item);
+    return item;
+  }
+
+  redo() {
+    const item = this._redo.pop();
+    this._undo.push(item);
+    return item;
+  }
+}
+```
+---
+### What is a JavaScript Call Stack?
+---
+export default CodeLayout
+
+```javascript
+const boo  = () => {
+  console.log('👻');
+}
+
+const beep = () => {
+  console.log('🤖');
+}
+
+const beepBoo = () => {
+  beep();
+  boo();
+}
+
+beepBoo();
+```
+---
+### [ Execution Context  fn()  ]
+### [ Execution Context  fn()  ]
+### [ Execution Context  fn()  ]
+### [ Execution Context  fn()  ]
+### [ Global Execution Context ]
+---
+### Each Execution Context has two phases
+ - Creation
+ - Execution
+---
+### Global Execution Context
+
+<ol>
+  <li style={{textAlign: 'left'}}>Creation Phase
+    <ul>
+      <li style={{textAlign: 'left'}}>this</li>
+      <li style={{textAlign: 'left', color: 'yellow'}}>global/window object</li>
+      <li style={{textAlign: 'left'}}>attach functions + arguments + variables to Context</li>
+      <li style={{textAlign: 'left'}}>setup memory space for them (heap)</li>
+    </ul>  
+  </li>
+  <li style={{textAlign: 'left'}}>Execution Phase
+    <ul>
+      <li style={{textAlign: 'left'}}>Execute code line-by-line</li>
+    </ul>
+  </li>
+</ol>
+---
+### Execution Context fn()
+
+<ol>
+  <li style={{textAlign: 'left'}}>Creation Phase
+    <ul>
+      <li style={{textAlign: 'left'}}>this</li>
+      <li style={{textAlign: 'left'}}>attach functions + variables to Context</li>
+      <li style={{textAlign: 'left'}}>setup memory space for them (heap)</li>
+    </ul>  
+  </li>
+  <li style={{textAlign: 'left'}}>Execution Phase
+    <ul>
+      <li style={{textAlign: 'left'}}>Execute code line-by-line</li>
+    </ul>
+  </li>
+</ol>
+---
+### Function Invocation
+- every function call _pushes_ a new Execution Context
+- begins Creation and Execution Phases
+- when done _pops_ off Execution Stack
+- top of Execution Stack continues Execution
+- only when Execution Stack is empty, other work can begin
+---
+### Demo
+[👻](https://tylermcginnis.com/javascript-visualizer/?code=function%20boo%28%29%20%7B%0A%20%20console.log%28%27boo%27%29%3B%0A%7D%0A%0Afunction%20beep%28%29%20%7B%0A%20%20console.log%28%27beep%27%29%3B%0A%7D%0A%0Afunction%20beepBoo%28%29%20%7B%0A%20%20beep%28%29%3B%0A%20%20boo%28%29%3B%0A%7D%0A%0AbeepBoo%28%29%3B)
+---
