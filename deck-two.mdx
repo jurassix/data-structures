@@ -524,15 +524,149 @@ class Tree {
     }
   }
   traverse(callback) {
-    
+    const walk = (node) => {
+      callback(node);
+      node.children.forEach(node);
+    };
+    walk(this.root);
   }
 }
 ```
 ---
-### We also use trees for searching
+### Bonus material
+If you are seeing this then we may be able to keep going
+---
+### Serialization + Hashing + Equality
+
+```notes
+Hashing is an Algorithm that maps an input to a value.
+In JavaScript hashing is fairly complicated, but has some base elements we can examine.
+```
+---
+### Serialization of JavaScript has to handle with Circular References
+---
+export default CodeLayout
+
+```javascript
+let a = {};
+let b = { '🌧': a };
+
+a['🌈'] = b;
+
+isCircular(a); // true
+isCircular(b); // true
+```
+---
+```javascript
+const isCircular = s => {
+  const cache = new WeakSet();
+  const __isCircular = o => {
+    switch (getType(o)) {
+      case 'string':
+      case 'number':
+        return false;
+      case 'object':
+        if (cache.has(o)) return true;
+        else cache.add(o);
+        return Object.keys(o)
+          .sort()
+          .some(key => __isCircular(o[key]));
+      case 'array':
+        return o.some(__isCircular);
+      default:
+        return false;
+    }
+  };
+  return __isCircular(s);
+};
+```
+---
+### Have you written JSON.stringify in JavaScript?
 ---
 export default CodeLayout
 
 ```javascript
 
+let a = {
+  '🐒': '💩',
+  yolo: ['🤞🏽', '✌🏽', '🤟🏽', '🤘🏽', { '👌🏽': 'ok' }],
+};
+
+stringify(a);
+// "{yolo:[🤞🏽,✌🏽,🤟🏽,🤘🏽,{👌🏽:ok}],🐒:💩}"
 ```
+---
+```javascript
+const stringify = s => {
+  const cache = new WeakSet();
+  const __stringify = o => {
+    switch (getType(o)) {
+      case 'string':
+      case 'number':
+        return o;
+      case 'object':
+        if (cache.has(o)) return '[Circular Reference]';
+        else cache.add(o);
+        return (
+          '{' +
+          Object.keys(o)
+            .sort()
+            .map(key => key + ':' + __stringify(o[key]))
+            .join(',') +
+          '}'
+        );
+      case 'array':
+        return '[' + o.map(__stringify).join(',') + ']';
+      default:
+        return '';
+    }
+  };
+  return __stringify(s);
+};
+```
+```notes
+const getType = t => {
+  if (Array.isArray(t)) return 'array';
+  return typeof t;
+};
+```
+---
+### Hashing 
+#### stringify + a hashing algorithm (SHA1, MD5, etc)
+
+```javascript
+md5(stringify({ a: '🦋', b: '🦄' }));
+```
+---
+### Hashing Algorithm (simplified)
+
+```javascript
+function hashCode(val) {
+  let hashCode = 0;
+  let character;
+  // If value to be hashed is already an integer, return it.
+  if (val.length === 0 || val.length === undefined) {
+    return val;
+  }
+  for (let i = 0; i < val.length; i++) {
+    character = val.charCodeAt(i);
+    hashCode = (hashCode << 5) - hashCode + character;
+    hashCode = hashCode & hashCode;
+  }
+  return hashCode;
+}
+```
+```notes
+https://mgechev.github.io/javascript-algorithms/data-structures_hash-table.js.html
+```
+---
+export default CodeLayout
+
+```javascript
+
+let yolo = ['🤞🏽', '✌🏽', '🤟🏽', '🤘🏽'];
+
+hashCode('🤟🏽'); // 1705342882
+hashCode(stringify(yolo)); // 1079040135
+```
+---
