@@ -375,6 +375,17 @@ class Set {
 ### Please don't write your own Set 😘
 ### It's built in
 ---
+### WeakSet
+- Only store _object_ data types
+- No iteration: has, add, delete
+---
+### WeakSet can be GC'd
+```javascript
+const set = new WeakSet();
+
+set.add({}).add({});
+```
+---
 export default CodeLayout
 
 ### Limitations with objects
@@ -450,4 +461,17 @@ class Map {
 ---
 ### Please don't write your own Map 😘
 ### It's built in
+---
+### WeakMap
+- Only store _object_ data types
+- No iteration: has, get, set, delete
+---
+### WeakMap can be GC'd
+```javascript
+const map = new WeakMap();
+
+map.set({}, 'value').set({}, 'another value');
+```
+---
+### Trees
 ---
