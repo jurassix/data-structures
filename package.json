@@ -2,9 +2,9 @@
   "name": "data-structures",
   "version": "1.0.0",
   "description": "connect.js presentation 2018",
-  "main": "deck-two.mdx",
+  "main": "deck.mdx",
   "scripts": {
-    "start": "mdx-deck deck-two.mdx"
+    "start": "mdx-deck deck.mdx"
   },
   "author": "clinton.ayres@gmail.com (jurassix)",
   "license": "MIT",

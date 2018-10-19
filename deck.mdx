@@ -7,239 +7,204 @@ import { backgroundColor } from './constants'
 import CodeLayout from './layouts/Code'
 
 # CS Basics
-## JavaScript Basics
-### [Increase understanding through experiments]
-
+## Explaining JavaScript Through CS
 ---
 # Clint Ayres
 ## @who_cayres
-## https://github.com/jurassix
+## https://github.com/jurassix/data-structures
 ---
-### The decisions we make in our code,
-### changes as data grows.
-```notes
- - everything works when:
-   - you have one user
-   - you have nothing in your database
-   - you have no network latency
-   - you have unlimited memory
-
-```
+# Thanks
+ - [MIT OpenCourseWare - Advanced JavaScript](https://www.youtube.com/watch?v=T0yzrZL1py0)
+ - [Codeacademy - Advanced JavaScript Tutorials](https://www.youtube.com/watch?v=jT0USJeNFEA)
+ - [James Kyle - Itsy-Bitsy-Data-Structures](https://github.com/jamiebuilds/itsy-bitsy-data-structures)
+ - [Minko Gechev - JavaScript Algorithms](https://github.com/mgechev/javascript-algorithms)
 ---
-### understanding of the basics javascript and cs
-### give you finess and creativity when wrtting code
-
-```notes
-once you know how something works, you can exploit it
-```
----
-### Agenda / Experiments
-
- <!-- - Analyzing Algorithm Time + Space Complexity -->
- <!-- - Immutablility -->
-
- - Data Types + Functions
- - Memory Management
- - Serialization + Hashing + Equality
- - Sets + Maps
- - Trees
----
-### Data Types + Functions
----
-### In the real world we work with more that Primitives
-```notes
-The reason examples like Factorial are hard to learn from is than
-```
----
-### Primitives (immutable)
- - Boolean
- - Null
- - Undefined
- - Number
- - String
- - Symbol
+### Stack
 ---
 export default CodeLayout
 
 ```javascript
-// primitives are referentially equal
-let a = '1 two 👞';
-let b = '1 two 👞';
+const stack = new Stack();
 
-console.log(a === b); // true
-console.log(a ==  b); // true
+stack.push('🦄');  // bottom [🦄] top
+stack.push('🦋');  // bottom [🦄, 🦋] top
+stack.push('🐞');  // bottom [🦄, 🦋, 🐞] top
 
-a += '3 4 🚪';
-console.log(b); // '1 two 👞'
+stack.peek(); // 🐞 top
+
+stack.pop(); // bottom [🦄, 🦋] top
+stack.pop(); // bottom [🦄] top
+stack.pop(); // bottom [] top
 ```
----
-export default CodeLayout
-
-### swap is beautiful
-
-```javascript
-[a, b] = [b, a];
-```
-```notes
-so I thought I'd give it a shot, this should be easy right?
-```
----
-### Quick facts about Functions...
- - Function arguments are always... <Box color='tomato'> _pass by value_! </Box>
- - You cannot reassign an argument from outside the current scope
- - Arguments are essentially _copies_ of passed in values
----
-export default CodeLayout
-
-### Also, this doesn't work
-
-```javascript
-const f = 💩 => 💰;
-```
----
-export default CodeLayout
-
-### 🧐
-
-```javascript
-const swap = (a, b) => [a, b] = [b, a];
-```
----
-export default CodeLayout
-
-### pass by value
-
-```javascript
-const swap = (a, b) => [a, b] = [b, a];
-
-let boo = '👻';
-let beep = '🤖';
-
-swap(boo, beep);
-
-console.log(boo); // 👻
-console.log(beep); // 🤖
-```
-```notes
-swap is beautiful until you put it in a function
-```
----
-### Objects (mutable)
- - Object
- - Array
- - Date
- - Map/WeakMap
- - Set/WeakSet
----
-### Quick facts about Functions with Objects...
- - Function arguments are always... <Box color='tomato'> _pass by value_! </Box>
- - You cannot reassign an argument from outside the current scope
- - However, an Objects _reference_ is a _value_. (Call by sharing)
- - But, you cannot reassign an object's reference from outside the current scope either
----
-### Also, emojis can be italicised!!
-
-<h1><em>😀 😀 😀 😀 😀 😀 😀 😀 😀</em></h1>
-
----
-export default CodeLayout
-
-### pass by reference???
-
-```javascript
-const swap = (a, b) => [a, b] = [b, a];
-
-const boo = { value: '👻' };
-const beep = { value: '🤖' };
-
-swap(boo, beep);
-
-console.log(boo);  // { value: '👻' }
-console.log(beep); // { value: '🤖' }
-```
----
-### It turns out even some basic things like swap, 
-### are really hard in JavaScript
 ---
 export default CodeLayout
 
 ```javascript
-const swap = (a, b) => {
-  const tempA = {...a};
-  // swap A
-  Object.keys(a).forEach(key => delete a[key]);
-  Object.keys(b).forEach(key => a[key] = b[key]);
-  // swap B
-  Object.keys(b).forEach(key => delete b[key]);
-  Object.keys(tempA).forEach(key => b[key] = tempA[key]);
-};
+// last-in first-out (LIFO) 
+class Stack {
+  constructor() {
+    this.list = [];    
+  }
+  push(item) {
+    this.list.push(item);
+  }
+  pop() {
+    return this.list.pop();
+  }
+  peek() {
+    const length = this.list.length;
+    return this.list[length - 1];
+  }
+}
 ```
 ---
-### Q: do we have to consider every data type uniquely?
-<Appear>
-A: Yups 😭
-</Appear>
+### In the wild 🦁
+---
+### Reverse a word
+
+```javascript
+const stack = new Stack();
+const word = 'pumpkin';
+Array.from(word).map(c => stack.push(c));
+
+let reversed = '';
+while (stack.peek()) {
+  reversed += stack.pop();
+}
+
+console.log(reversed); // nikpmup
+```
+---
+### Undo + Redo
+
+```javascript
+const history = new History();
+
+history.add('🦄'); // bottom [🦄] top
+history.add('🦋'); // bottom [🦄, 🦋] top
+history.add('🐞'); // bottom [🦄, 🦋, 🐞] top
+
+history.undo(); // bottom [🦄, 🦋] top
+history.undo(); // bottom [🦄] top
+
+history.add('🐢'); // bottom [🦄, 🐢] top
+history.undo(); // bottom [🦄] top
+
+history.redo(); // bottom [🦄, 🐢] top
+history.redo(); // bottom [🦄, 🐢, 🦋] top
+history.redo(); // bottom [🦄, 🐢, 🦋, 🐞] top
+```
+---
+### Undo + Redo
+
+```javascript
+class History {
+  constructor() {
+    this.list = new Stack();
+    this.discard = new Stack();
+  }
+
+  add(item) {
+    this.list.push(item);
+  }
+  
+  undo() {
+    const item = this.list.pop();
+    this.discard.push(item);
+    return item;
+  }
+
+  redo() {
+    const item = this.discard.pop();
+    this.list.push(item);
+    return item;
+  }
+}
+```
+---
+### What is a JavaScript Call Stack?
 ---
 export default CodeLayout
 
 ```javascript
-const swap = (a, b) => {
-  const tempA = [...a];
-  // swap A
-  a.length = 0;
-  a.push(...b);
-  // swap B
-  b.length = 0;  
-  b.push(...tempA);
-};
+const boo  = () => {
+  console.log('👻');
+}
+
+const beep = () => {
+  console.log('🤖');
+}
+
+const beepBoo = () => {
+  beep();
+  boo();
+}
+
+beepBoo();
 ```
 ---
-### What did I learn from all this?
+### [ Execution Context  fn()  ]
+### [ Execution Context  fn()  ]
+### [ Execution Context  fn()  ]
+### [ Execution Context  fn()  ]
+### [ Global Execution Context ]
+---
+### Each Execution Context has two phases
+ - Creation
+ - Execution
+---
+### Global Execution Context
 
-<Appear>
-<p>Functions are always pass-by-value</p>
-<p>Types are actually important even in an untyped language</p>
-<p>Swap is stupid hard, and doesn't work</p>
-<p>Emojis can be italicised!</p>
-</Appear> 
+<ol>
+  <li style={{textAlign: 'left'}}>Creation Phase
+    <ul>
+      <li style={{textAlign: 'left'}}>this</li>
+      <li style={{textAlign: 'left', color: 'yellow'}}>global/window object</li>
+      <li style={{textAlign: 'left'}}>attach functions + variables</li>
+      <li style={{textAlign: 'left'}}>setup memory space for them (heap)</li>
+    </ul>  
+  </li>
+  <li style={{textAlign: 'left'}}>Execution Phase
+    <ul>
+      <li style={{textAlign: 'left'}}>Execute code line-by-line</li>
+    </ul>
+  </li>
+</ol>
+---
+### Execution Context fn()
 
+<ol>
+  <li style={{textAlign: 'left'}}>Creation Phase
+    <ul>
+      <li style={{textAlign: 'left'}}>this</li>
+      <li style={{textAlign: 'left'}}>attach functions + variables to Context</li>
+      <li style={{textAlign: 'left'}}>setup memory space for them (heap)</li>
+    </ul>  
+  </li>
+  <li style={{textAlign: 'left'}}>Execution Phase
+    <ul>
+      <li style={{textAlign: 'left'}}>Execute code line-by-line</li>
+    </ul>
+  </li>
+</ol>
 ---
-### Memory Management
- - heap + stack + gc
- - allocate + use + release
+### Function Invocation
+- Each function call _pushes_ a new Execution Context on to the Stack
+- Creation phase
+-  (why fn.apply() is runtime)
+- Execution Phases
+- Once code has finished _pops_ off Execution Stack
+- Top of Execution Stack continues Execution Phase
+- Only when Execution Stack is empty, other work can begin
 ---
-image of js engine (heap + stack)
-credit: https://blog.sessionstack.com/how-does-javascript-actually-work-part-1-b0bacc073cf
+### Demo
+[👻](https://tylermcginnis.com/javascript-visualizer/?code=function%20boo%28%29%20%7B%0A%20%20console.log%28%27boo%27%29%3B%0A%7D%0A%0Afunction%20beep%28%29%20%7B%0A%20%20console.log%28%27beep%27%29%3B%0A%7D%0A%0Afunction%20beepBoo%28%29%20%7B%0A%20%20beep%28%29%3B%0A%20%20boo%28%29%3B%0A%7D%0A%0AbeepBoo%28%29%3B)
 ---
-image of call stack in action
-credit: https://blog.sessionstack.com/how-does-javascript-actually-work-part-1-b0bacc073cf
----
-# Heap
- - Memory allocation occurs here (wrong)
- - Parsed JS source is stored here (verify)
- - New variables are created here (wrong)
- - Garbage collections occurs here (wrong)
----
-# GC
- - How Memory is released
- - Algorithms like _mark-and-sweep_ used to determine which memory can be released
- - When GC is synchronous -> _ui 🔒_
----
-# Stack
- - Code is evaluated here as stack frames when your code excutes
- - Your execution path is processed and managed here
- - Stack is processed until empty  
- - While stack is non-empty nothing else can happen -> _ui 🔒_
- - Event Queue cycles when stack is empty, looking for next task
----
-image of js heap + stack + web apis + event loops 
-credit: https://blog.sessionstack.com/how-does-javascript-actually-work-part-1-b0bacc073cf
----
-image of stack execution
+### Examine the stack of our code
 ---
 export default CodeLayout
 
-### stack will never empty
+### execution phase never completes
 
 ```javascript
 let counter = 0;
@@ -248,40 +213,11 @@ while (true) {
 }
 ```
 ---
-### What does async exceptions drop the call stack?
----
 export default CodeLayout
 
-```javascript
-let counter = 0;
-let go = true;
-
-const work = () => {
-  console.log(counter++);
-  if (counter > 1000) throw new Error("YOLO");
-  if (go) setTimeout(work, 0);
-};
-
-// kick it off!
-work();
-```
----
-Q: How can I implement setTimeout in native JavaScript?
-
-<Appear>
-  A: You can't 🦃 it's a Web api!
-</Appear>
----
-How do the following affect the Call Stack?
- - recursion 
- - setTimeout
- - sync
- - async
----
-export default CodeLayout
+### stack will grow and eventually overflow
 
 ```javascript
-// recursion
 const work = () => {
   work();
 };
@@ -289,74 +225,276 @@ const work = () => {
 // kick it off!
 work();
 ```
+---
+### Queue
+---
+export default CodeLayout
 
-```notes
-exaust the stack (maximum callstack exceeded)
-learn more about the call stack does each function call add a new call stack?
+```javascript
+const queue = new Queue();
+
+queue.enqueue('🦄');  // front [🦄] end
+queue.enqueue('🦋');  // front [🦄, 🦋] end
+queue.enqueue('🐞');  // front [🦄, 🦋, 🐞] end
+
+queue.peek(); // 🦄 front
+
+queue.dequeue(); // front [🦋, 🐞] end
+queue.dequeue(); // front [🐞] end
+queue.dequeue(); // front [] end
+
+// hot eats, cool treats
 ```
 ---
 export default CodeLayout
 
 ```javascript
-// recursion + async
-const work = () => {
-  setTimeout(work, 0);
-};
-
-// kick it off!
-work();
-```
-```notes
-keep call stack shallow
+// first-in first-out (FIFO) 
+class Queue {
+  constructor() {
+    this.list = [];    
+  }
+  enqueue(item) {
+    this.list.push(item);
+  }
+  dequeue() {
+    return this.list.shift();
+  }
+  peek() {
+    return this.list[0];
+  }
+}
 ```
 ---
-async calls reset the callstack because they say give me a result later
+### What is a JavaScript Event Loop?
+---
+### Event Loop
+Call Stack + Callback Queue
+---
+<Image src="./images/event-loop.png" size="contain"/>
+---
+### Think about the call stack
 
-in a loop this causes the call stack to be parked and started again later
+```javascript
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].forEach(item => {
+  console.log(item);
+  setTimeout(() => {
+    console.log(`${item} 😈`);
+  }, 0);
+});
+```
+```notes
+ - our stack is clear now
+ - callback queue now has 10 items enqueued
+ - each is handled in order
+```
+---
+### Event Loop is the exchange between call stack and event queue
+---
+### Sets + Maps
+---
+export default CodeLayout
+
+```javascript
+
+const group1 = ['Lucy', 'Amelia', 'Miller', 'Jody'];
+const group2 = ['Gail', 'Sally', 'Marilyn', 'Jody'];
+
+// includes 'Jody' twice
+const all = [...group1, ...group2];
+
+// how to remove duplicates???
+
+```
+---
+### The Set data structure stores unique values
 ---
 ```javascript
-let counter = 0;
-const work = () => {
-  if (counter++ > 500) {
-    counter = 0;
-    setTimeout(work, 0);
-  } else {
-    work();
+const set = new Set();
+
+set.add('🦕'); // Set [ '🦕' ]
+set.add('🦖'); // Set [ '🦕', '🦖' ]
+set.add('🦖'); // Set [ '🦕', '🦖' ]
+
+set.has('🦕'); // true
+set.has('🔥'); // false
+
+set.size; // 2
+
+set.delete('🦖'); // removes 🦖 from the set
+
+// iterable
+for (let item of set) console.log(item); // '🦕'
+```
+---
+export default CodeLayout
+
+```javascript
+const set = new Set();
+
+// objects use referential equality (===)
+
+set.add({ a: 1 }); // Set [ {a: 1} ]
+set.add({ a: 1 }); // Set [ {a: 1}, {a: 1} ]
+
+const b = { b: 2 };
+set.add(b); // Set [ {a: 1}, {a: 1}, {b: 2} ]
+set.add(b); // Set [ {a: 1}, {a: 1}, {b: 2} ]
+```
+---
+export default CodeLayout
+
+```javascript
+// store only unique values
+class Set {
+  constructor() {
+    this.list = [];
   }
+  get size() {
+    return this.list.length;
+  }
+  add(item) {
+    if (!this.has(item)) {
+      this.list.push(item);
+    }
+  }
+  has(item) {
+    return this.list.includes(item);
+  }
+  delete(item) {
+    const index = this.list.indexOf(item);
+    if (index !== -1) {
+      delete this.list[index];
+    }
+  }
+}
+```
+---
+### Please don't write your own Set 😘
+### It's built in
+
+```javascript
+// native set
+const dedup = list => [...new Set(list)];
+```
+---
+### WeakSet
+- Only store _object_ data types
+- No iteration: has, add, delete
+---
+### WeakSet can be GC'd
+```javascript
+const set = new WeakSet();
+
+set.add({}).add({});
+```
+---
+export default CodeLayout
+
+### Limitations with objects
+
+```javascript
+
+const key = { 
+  name: 'Lucy', 
+  age: 4, 
+  location: 'Atlanta'
 };
 
-// kick it off!
-work();
-```
+const map = { 
+  [key]: 'child' 
+};
 
-```notes
-gain performance deepend he callstack and manage escape hatches.
+// { [object Object]: 'child' }
 ```
 ---
-### Tail Call Optimization (TCO)
-<Appear>
-<p>Doesn't work (for me)</p>
-<p>https://twitter.com/who_cayres/status/1051865386759725057</p>
-</Appear>
+### The Map data structure holds key-value pairs, and supports objects as keys.
 ---
-### What did I learn from all this?
-<Appear>
-<p>Recusion should be used on bounded data sets</p>
-<p>Async resets our call-stack giving us <em>unbounded</em> operations on a data set</p>
-<p>Async is essential language decision in a single threaded env, especially for large data sets</p>
-<p>While not likely, I can combine the two for perf gains</p>
-</Appear> 
+```javascript
+const map = new Map();
+
+const string = 'key';
+const object = {};
+const fn = function() {};
+
+// setting the values
+map.set(string, 'string value');
+map.set(object, 'object value');
+map.set(fn, 'fn value');
+
+map.has(fn) // true
+
+// Map(3) {
+//   "key" => "string value",
+//   {} => "object value",
+//   ƒ => "fn value"
+// }
+```
+---
+export default CodeLayout
+
+```javascript
+// store any data type as keys [list of lists]
+class Map {
+  constructor() {
+    this.list = [];
+  }
+  set(key, value) {
+    if (!this.has(key)) {
+      this.list.push([key, value]);
+    }
+  }
+  get(key) {
+    const item = this.list.find(([k, v]) => k === key);
+    if (item) {
+      return item.value;
+    }
+  }
+  has(key) {
+    return this.list.some(([k, v]) => k === key);
+  }
+  delete(key) {
+    const index = this.list.findIndex(([k, v]) => k === key);
+    if (index !== -1) {
+      delete this.list[index];
+    }
+  }
+}
+```
+---
+### Please don't write your own Map 😘
+### It's built in
+---
+### WeakMap
+- Only store _object_ data types
+- No iteration: has, get, set, delete
+---
+### WeakMap can be GC'd
+```javascript
+const map = new WeakMap();
+
+map.set({}, 'value').set({}, 'another value');
+```
+---
+## JS Event Loop
+
+### Stack -> Call Stack
+### Queue -> Callback Queue
+---
+## Working with Data
+
+### Set -> Unique items
+### WeakSet -> Unique objects
+### Map -> Key + Value with Complex keys
+### WeakMap -> Key + Value with Object keys
+---
+### Bonus material
 ---
 ### Serialization + Hashing + Equality
-
-```notes
-Hashing is an Algorithm that maps an input to a value.
-In JavaScript hashing is fairly complicated, but has some base elements we can examine.
-```
----
-### Serialization of JavaScript has to handle with Circular References
 ---
 export default CodeLayout
+
+### Serialization of JavaScript has to handle with Circular References
 
 ```javascript
 let a = {};
@@ -480,409 +618,4 @@ let yolo = ['🤞🏽', '✌🏽', '🤟🏽', '🤘🏽'];
 hashCode('🤟🏽'); // 1705342882
 hashCode(stringify(yolo)); // 1079040135
 ```
----
-export default CodeLayout
-
-```javascript
-const hash = s => {
-  const cache = new WeakSet();
-  const __hash = o => {
-    switch (getType(o)) {
-      case 'string':
-      case 'number':
-        return hashCode(o);
-      case 'object':
-        if (cache.has(o)) return 0;
-        else cache.add(o);
-        return Object.keys(o)
-          .sort()
-          .map(key => __hash(o[key]))
-          .reduce(sumAcc, 0);
-      case 'array':
-        return o.map(__hash).reduce(sumAcc, 0);
-      default:
-        return 0;
-    }
-  };
-  return __hash(s);
-};
-```
-```notes
-make a slide with the basic algorithm
-```
----
-export default CodeLayout
-
-```javascript
-
-let yolo = ['🤞🏽', '✌🏽', '🤟🏽', '🤘🏽'];
-
-hash('🤟🏽'); // 1705342882
-hash(['🤞🏽', '✌🏽', '🤟🏽', '🤘🏽']) // 5127400491
-```
----
-### What can you do with Hashing?
-
-<Appear>
-<p>Compare if two objects are the equal</p>
-<p>Referential Equality vs Structural Equality</p>
-<p>Map complex data to a single value</p>
-</Appear>
----
-export default CodeLayout
-
-```javascript
-const o1 = { a: '🦋', b: '🦄' };
-const o2 = { b: '🦄', a: '🦋' };
-
-o1 === o2; // false
-o1 ==  o2; // false
-
-hash(o1) === hash(o2); // true
-hash(o1) ==  hash(o2); // true
-```
-```notes
-referential because hashCode returns primiatives and primatives are immutable
-```
----
-export default CodeLayout
-
-### Maps in JavaScript are HashMaps*
-
-```javascript
-const value = { a: '🦋', b: '🦄' };
-
-const key = hash(value);
-
-// single value "mapping" to complex data
-const map = { [key]: value };
-```
----
-### Optimizations 😎
-
-<Appear>
-<p>Don't use hashing for deep equality checks, can't terminate early</p>
-<p>Pre-hash and store those hashes on the object as a static revision/hashCode</p>
-<p>Don't compute a hash, just assign a unique key e.g. revision to your objects; change it when your object changes, compare hashes</p>
-</Appear>
----
-### What did I learn from all this?
-
-<Appear>
-<p>Prefer referential equality to serializations</p>
-<p>Account for Circular references in your data</p>
-<p>async traversal may effects call stack giving you some more cylces</p>
-<p>sync traversal may overflow stack</p>
-<p>If going across a serializaiton boundry e.g. fetch, hashing may be more efficient than a rerender</p>
-</Appear> 
----
-look into GIT sourcecode for object hashing algorithm
-
-https://github.com/git/git/tree/e83c5163316f89bfbde7d9ab23ca2e25604af290
----
-### Sets + Maps
----
-export default CodeLayout
-
-```javascript
-
-const group1 = ['Lucy', 'Amelia', 'Miller', 'Jody'];
-const group2 = ['Gail', 'Sally', 'Marlyn', 'Jody'];
-
-// includes 'Jody' twice
-const all = [...group1, ...group2];
-
-// how to remove duplicates???
-
-```
----
-### The Set data structure store's unique values of any type.
----
-```javascript
-const set = new Set();
-
-set.add('🦕'); // Set [ '🦕' ]
-set.add('🦖'); // Set [ '🦕', '🦖' ]
-set.add('🦖'); // Set [ '🦕', '🦖' ]
-
-set.has('🦕'); // true
-set.has('🔥'); // false
-
-set.size; // 2
-
-set.delete('🦖'); // removes 🦖 from the set
-
-// iterable
-for (let item of set) console.log(item); // '🦕'
-```
----
-export default CodeLayout
-
-```javascript
-const set = new Set();
-
-// objects use referential equality (===)
-
-set.add({ a: 1 }); // Set [ {a: 1} ]
-set.add({ a: 1 }); // Set [ {a: 1}, {a: 1} ]
-
-const b = { b: 2 };
-set.add(b); // Set [ {a: 1}, {a: 1}, {b: 2} ]
-set.add(b); // Set [ {a: 1}, {a: 1}, {b: 2} ]
-```
----
-### When you need to remove duplicates reach for Set.
----
-export default CodeLayout
-
-```javascript
-// native set
-const dedup = list => [...new Set(list)];
-
-```
----
-export default CodeLayout
-
-```javascript
-import uniq from 'lodash/uniq';
-
-const dedup = list => uniq(list);
-
-```
----
-export default CodeLayout
-
-```javascript
-
-// forEach
-const dedup = list => {
-  const uniqueList = [];
-  list.forEach(item => {
-    if (!uniqueList.includes(item)) {
-      uniqueList.push(item);
-    }
-  });
-  return uniqueList;
-};
-
-```
----
-https://jsperf.com/dedup/1
----
-<Image src="./images/dedup_results.png" size="contain"/>
----
-### why is our hand rolled solution so underperfomant?
----
-### let's examine lodash for some advise
-
-[uniq.js](https://raw.githubusercontent.com/lodash/lodash/master/uniq.js)
-
-[baseUniq.js](https://raw.githubusercontent.com/lodash/lodash/master/.internal/baseUniq.js)
-
-[setToArray.js](https://raw.githubusercontent.com/lodash/lodash/master/.internal/setToArray.js)
----
-```javascript
-
-// forEach
-const SEEN = '__SEEN__';
-
-const dedup = list => {
-  const __cache = {};
-
-  const uniqueList = [];
-  list.forEach(item => {
-    if (__cache[item] !== SEEN) {
-      // update cache
-      __cache[item] = SEEN;
-
-      // add to list
-      uniqueList.push(item);
-    }
-  });
-  return uniqueList;
-};
-```
----
-https://jsperf.com/dedup/10
----
-<Image src="./images/dedup_refactor_results.png" size="contain"/>
----
-### limitations: we can't support deduping lists with objects
----
-export default CodeLayout
-
-```javascript
-const string = 'anything in quotes';
-const number = 1980;
-const date = new Date('11/07/1980');
-const object = { 'key': 'value' };
-const array = [ 1, 2, 3, 4 ];
-```
----
-export default CodeLayout
-
-```javascript
-
-const key = { 
-  name: 'Lucy', 
-  age: 4, 
-  location: 'Atlanta'
-};
-
-const map = { 
-  [key]: 'child' 
-};
-
-// { [object Object]: 'child' }
-```
----
-export default CodeLayout
-
-```javascript
-
-const map = {
-  [{ a: 1 }]: 'child',
-  [{ b: 1 }]: 'value',
-};
-
-// { [object Object]: 'value' }
-```
----
-### The Map data structure holds key-value pairs, and supports objects as keys.
----
-```javascript
-const map = new Map();
-
-const string = 'key';
-const object = {};
-const fn = function() {};
-
-// setting the values
-map.set(string, 'string value');
-map.set(object, 'object value');
-map.set(fn, 'fn value');
-
-map.has(fn) // true
-
-// Map(3) {
-//   "key" => "string value",
-//   {} => "object value",
-//   ƒ => "fn value"
-// }
-```
----
-```javascript
-
-// forEach
-const dedup = list => {
-  const __cache = new Map();
-
-  const uniqueList = [];
-  list.forEach(item => {
-    if (!__cache.has(item)) {
-      // update cache
-      __cache.set(item, true);
-
-      // add to list
-      uniqueList.push(item);
-    }
-  });
-  return uniqueList;
-};
-```
----
-export default CodeLayout
-
-```javascript
-let a = { value: 1 };
-
-dedup([a, a, a])
-
-// [{ value: 1 }]
-```
----
-### The WeakSet data structure store's unique objcet refs, no iteration.
----
-
-```javascript
-const apis = new WeakSet();
-
-apis
-  .add({
-    uri: '/api/users',
-    method: 'GET',
-  })
-  .add({
-    uri: '/api/roles',
-    method: 'GET',
-  });
-
-```
-
-```notes
-demo - use performance tab to force a gc and clear the set
-```
----
-```javascript
-const set = new WeakSet();
-let go = true;
-
-const work = () => {
-  console.log('begin work');
-
-  for (let i = 0; i < 100000; i++) {
-    set.add({});
-  }
-  
-  if (go) setTimeout(work, 0);
-};
-
-// kick it off!
-work();
-```
-
-```notes 
-if these were dom objects as we mutate the dom we are allowing those objects to be cleared
-```
----
-### What did I learn from all this?
-
-<Appear>
-<p>Object keys must be primatives</p>
-<p>Use Map() to store objects as keys</p>
-<p>Use Set() to create unique lists</p>
-<p>WeakMap/Set must contain Objects and they can be GC'd, no primiatives, no iterations</p>
-</Appear> 
----
-### Trees
----
-```javascript
-const root = {
-  id: 1,
-  value: { '🕷': '🕸' },
-  children: [
-    {
-      id: 2,
-      value: { '🐴': '🦄' },
-      children: [],
-    },
-    {
-      id: 3,
-      value: { '🐣': '🐥' },
-      children: [
-        {
-          id: 4,
-          value: { '🐼': '🐻' },
-          children: [],
-        },
-      ],
-    },
-  ],
-};
-```
----
-#### Trees are 
----
-### The decisions we make in our code,
-### changes as data grows.
 ---
