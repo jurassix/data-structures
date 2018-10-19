@@ -7,8 +7,17 @@ import { backgroundColor } from './constants'
 import CodeLayout from './layouts/Code'
 
 # CS Basics
-## JavaScript Basics
-### [Increase understanding through experiments]
+## Explaining JavaScript Through CS
+---
+# Clint Ayres
+## @who_cayres
+## https://github.com/jurassix/data-structures
+---
+# Thanks
+ - [MIT OpenCourseWare - Advanced JavaScript](https://www.youtube.com/watch?v=T0yzrZL1py0)
+ - [Codeachademy - Advanced JavaScript Tutorials](https://www.youtube.com/watch?v=jT0USJeNFEA)
+ - [James Kyle - Itsy-Bitsy-Data-Structures](https://github.com/jamiebuilds/itsy-bitsy-data-structures)
+ - [Minko Gechev - JavaScript Algoithms](https://github.com/mgechev/javascript-algorithms)
 ---
 ### Stack
 ---
@@ -195,6 +204,7 @@ beepBoo();
 export default CodeLayout
 
 ### stack will never empty
+(always a next line to execute)
 
 ```javascript
 let counter = 0;
@@ -206,27 +216,10 @@ while (true) {
 export default CodeLayout
 
 ### stack will grow and eventually overflow
+(recursion -> funcation that calls itself)
 
 ```javascript
 const work = () => {
-  work();
-};
-
-// kick it off!
-work();
-```
----
-export default CodeLayout
-
-### stack will grow and eventually throw
-
-```javascript
-let shouldThrow = true;
-const work = () => {
-  if (shouldThrow) {
-    setTimeout(() => { throw new Error('setTimeout 😈'); }, 0);
-    shouldThrow = false;
-  }
   work();
 };
 
@@ -534,7 +527,6 @@ class Tree {
 ```
 ---
 ### Bonus material
-If you are seeing this then we may be able to keep going
 ---
 ### Serialization + Hashing + Equality
 
