@@ -15,9 +15,9 @@ import CodeLayout from './layouts/Code'
 ---
 # Thanks
  - [MIT OpenCourseWare - Advanced JavaScript](https://www.youtube.com/watch?v=T0yzrZL1py0)
- - [Codeachademy - Advanced JavaScript Tutorials](https://www.youtube.com/watch?v=jT0USJeNFEA)
+ - [Codeacademy - Advanced JavaScript Tutorials](https://www.youtube.com/watch?v=jT0USJeNFEA)
  - [James Kyle - Itsy-Bitsy-Data-Structures](https://github.com/jamiebuilds/itsy-bitsy-data-structures)
- - [Minko Gechev - JavaScript Algoithms](https://github.com/mgechev/javascript-algorithms)
+ - [Minko Gechev - JavaScript Algorithms](https://github.com/mgechev/javascript-algorithms)
 ---
 ### Stack
 ---
@@ -160,7 +160,7 @@ beepBoo();
     <ul>
       <li style={{textAlign: 'left'}}>this</li>
       <li style={{textAlign: 'left', color: 'yellow'}}>global/window object</li>
-      <li style={{textAlign: 'left'}}>attach functions + arguments + variables to Context</li>
+      <li style={{textAlign: 'left'}}>attach functions + variables</li>
       <li style={{textAlign: 'left'}}>setup memory space for them (heap)</li>
     </ul>  
   </li>
@@ -191,6 +191,7 @@ beepBoo();
 ### Function Invocation
 - Each function call _pushes_ a new Execution Context on to the Stack
 - Creation phase
+-  (why fn.apply() is runtime)
 - Execution Phases
 - Once code has finished _pops_ off Execution Stack
 - Top of Execution Stack continues Execution Phase
@@ -203,8 +204,7 @@ beepBoo();
 ---
 export default CodeLayout
 
-### stack will never empty
-(always a next line to execute)
+### execution phase never completes
 
 ```javascript
 let counter = 0;
@@ -216,7 +216,6 @@ while (true) {
 export default CodeLayout
 
 ### stack will grow and eventually overflow
-(recursion -> funcation that calls itself)
 
 ```javascript
 const work = () => {
@@ -243,6 +242,8 @@ queue.peek(); // 🦄 front
 queue.dequeue(); // front [🦋, 🐞] end
 queue.dequeue(); // front [🐞] end
 queue.dequeue(); // front [] end
+
+// hot eats, cool treats
 ```
 ---
 export default CodeLayout
@@ -279,10 +280,11 @@ Call Stack + Callback Queue
     console.log(`${item} 😈`);
   }, 0);
 });
-
-// our stack is clear now
-// callback queue now has 10 items enqueued
-// each is handled in order
+```
+```notes
+ - our stack is clear now
+ - callback queue now has 10 items enqueued
+ - each is handled in order
 ```
 ---
 ### Event Loop is the exchange between call stack and event queue
@@ -294,7 +296,7 @@ export default CodeLayout
 ```javascript
 
 const group1 = ['Lucy', 'Amelia', 'Miller', 'Jody'];
-const group2 = ['Gail', 'Sally', 'Marlyn', 'Jody'];
+const group2 = ['Gail', 'Sally', 'Marilyn', 'Jody'];
 
 // includes 'Jody' twice
 const all = [...group1, ...group2];
@@ -368,6 +370,11 @@ class Set {
 ---
 ### Please don't write your own Set 😘
 ### It's built in
+
+```javascript
+// native set
+const dedup = list => [...new Set(list)];
+```
 ---
 ### WeakSet
 - Only store _object_ data types
@@ -467,64 +474,17 @@ const map = new WeakMap();
 map.set({}, 'value').set({}, 'another value');
 ```
 ---
-### Trees
----
-export default CodeLayout
+## JS Event Loop
 
-### HTML is hierarchical
-
-```javascript
-<section>
-  <h2>🐯</h2>
-  <p>🦁</p>
-  <em>
-    <h1>🐮</h1>
-    <p>🐷</p>
-  </em>
-</section>
-```
+### Stack -> Call Stack
+### Queue -> Callback Queue
 ---
-### We use trees to model hierarchical data
----
-export default CodeLayout
+## Working with Data
 
-```javascript
-class Node {
-  constructor(value, children) {
-    this.value = value;
-    this.children = Array.isArray(children) ? children : [];
-  }
-}
-```
----
-export default CodeLayout
-
-```javascript
-class Tree {
-  constructor() {
-    this.root = null;
-  }
-  add(value, parentValue) {
-    const child = new Node(value, []);
-    if (this.root == null) {
-      this.root = child;
-    } else {    
-      traverse(node => {
-        if (node.value === parentValue) {
-          node.children.push(child)
-        }
-      });
-    }
-  }
-  traverse(callback) {
-    const walk = (node) => {
-      callback(node);
-      node.children.forEach(node);
-    };
-    walk(this.root);
-  }
-}
-```
+### Set -> Unique items
+### WeakSet -> Unique objects
+### Map -> Key + Value with Complex keys
+### WeakMap -> Key + Value with Object keys
 ---
 ### Bonus material
 ---
